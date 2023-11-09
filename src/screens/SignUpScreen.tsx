@@ -39,6 +39,8 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
         ...value,
         error: "All fields are mandatory.",
       });
+      setIsLoading(false);
+
       return;
     }
 
@@ -86,8 +88,8 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
 
       {isLoading && <ActivityIndicator color={"blue"} size={"large"} />}
       {!!value.error && (
-        <View style={styles.error}>
-          <Text>{value.error}</Text>
+        <View>
+          <Text style={styles.error}>{value.error}</Text>
         </View>
       )}
 
@@ -156,9 +158,9 @@ const styles = StyleSheet.create({
   },
 
   error: {
-    marginTop: 10,
-    padding: 10,
-    color: "#fff",
-    backgroundColor: "#D54826FF",
+    // marginTop: 10,
+    // padding: 10,
+    color: "red",
+    // backgroundColor: "#D54826FF",
   },
 });

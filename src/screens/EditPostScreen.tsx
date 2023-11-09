@@ -6,7 +6,6 @@ import { collection, doc, updateDoc } from "firebase/firestore";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import { db } from "../../firebaseConfig";
-
 import { RouteProp } from "@react-navigation/native";
 import { AppRootStackParamList } from "../types/types";
 import ProgressIndicator from "../components/common/ProgressIndicator";

@@ -16,6 +16,7 @@ import { AppRootStackParamList } from "../types/types";
 import { db, storage } from "../../firebaseConfig";
 import { generateUniqueImageName } from "../utils/helper";
 import ProgressIndicator from "../components/common/ProgressIndicator";
+import { uploadImage } from "../utils/firebaseUtils";
 
 type CreatePostScreenProps = {
   navigation: StackNavigationProp<AppRootStackParamList, "CreatePost">;
@@ -37,8 +38,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
         let imageUrl: string | undefined = "";
 
         if (post.image) {
-          let uniqueName = generateUniqueImageName();
-          imageUrl = await uploadImage(post.image, uniqueName);
+          imageUrl = await uploadImage(post.image);
         }
 
         let newPost = { ...post, authorId: user?.uid, image: imageUrl };
@@ -57,23 +57,6 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
       console.error("Error adding post: ", error);
     } finally {
       setLoading(false);
-    }
-  };
-  const uploadImage = async (imageUri: string, imageName: string) => {
-    const storageRef = ref(storage, "images/" + imageName);
-
-    try {
-      const response = await fetch(imageUri);
-      const blob = await response.blob();
-
-      // Upload the image to Storage using uploadBytes
-      await uploadBytes(storageRef, blob);
-      console.log("Image uploaded successfully.");
-      // Get the download URL of the uploaded image
-      const imageUrl = await getDownloadURL(storageRef);
-      return imageUrl;
-    } catch (error) {
-      console.error("Error uploading image:", error);
     }
   };
 

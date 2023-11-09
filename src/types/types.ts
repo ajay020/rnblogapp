@@ -3,6 +3,7 @@ export type AppRootStackParamList = {
   CreatePost: undefined;
   EditPost: { postData: PostData };
   PostDetail: { postData: PostData };
+  UpdateProfile: undefined;
 };
 
 export type AuthRootStackParamList = {

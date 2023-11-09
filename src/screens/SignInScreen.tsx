@@ -35,6 +35,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({ navigation }) => {
     setIsLoading(true);
 
     if (value.email === "" || value.password === "") {
+      setIsLoading(false);
       setValue({
         ...value,
         error: "Email and password are mandatory.",

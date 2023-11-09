@@ -1,12 +1,11 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Button } from "@rneui/themed";
 import { FAB } from "@rneui/themed";
-
-import { FIREBASE_AUTH, db } from "../../firebaseConfig";
-import PostList from "../components/PostList";
-import { RouteProp, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp, useNavigation } from "@react-navigation/native";
+
+import { db } from "../../firebaseConfig";
+import PostList from "../components/PostList";
 import { AppRootStackParamList, PostData } from "../types/types";
 import {
   DocumentData,
@@ -19,6 +18,8 @@ import {
   onSnapshot,
   query,
 } from "firebase/firestore";
+import ProgressIndicator from "../components/common/ProgressIndicator";
+import { getAuth } from "firebase/auth";
 
 interface HomeScreenProps {
   navigation: StackNavigationProp<AppRootStackParamList, "Home">;
@@ -132,7 +133,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   };
 
   if (postsWithAuthors === null) {
-    return <Text>Loading...</Text>;
+    return <ProgressIndicator />;
   }
 
   return (
@@ -145,7 +146,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         style={styles.fab}
         onPress={() => navigation.navigate("CreatePost")}
       />
-      {/* <Button title="sign out" onPress={() => signOut(FIREBASE_AUTH)} /> */}
     </View>
   );
 };

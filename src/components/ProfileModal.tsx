@@ -2,8 +2,11 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Modal from "react-native-modal";
-import { getAuth, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { useNavigation } from "@react-navigation/native";
+import { AppRootStackParamList } from "../types/types";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 interface PropType {
   isVisible: boolean;
@@ -11,6 +14,9 @@ interface PropType {
 }
 
 const ProfileModal = ({ isVisible, onClose }: PropType) => {
+  const navigation =
+    useNavigation<StackNavigationProp<AppRootStackParamList>>();
+
   const handleBackButtonPress = () => {
     // Handle back button press here
     onClose();
@@ -29,7 +35,10 @@ const ProfileModal = ({ isVisible, onClose }: PropType) => {
       <View style={styles.modalContainer}>
         <TouchableOpacity
           style={styles.userControl}
-          onPress={() => console.log("Update Profile")}
+          onPress={() => {
+            navigation.navigate("UpdateProfile");
+            onClose();
+          }}
         >
           <Text style={styles.userControlText}>Update Profile</Text>
         </TouchableOpacity>
@@ -54,7 +63,6 @@ const styles = StyleSheet.create({
   modal: {
     justifyContent: "flex-end",
     margin: 0,
-    // backgroundColor: "wheat",
   },
   modalContainer: {
     backgroundColor: "white",
