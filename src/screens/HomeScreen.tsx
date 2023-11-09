@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Button } from "@rneui/themed";
-import { getAuth, signOut } from "firebase/auth";
 import { FAB } from "@rneui/themed";
 
 import { FIREBASE_AUTH, db } from "../../firebaseConfig";
