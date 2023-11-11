@@ -10,6 +10,8 @@ import { RouteProp } from "@react-navigation/native";
 import { AppRootStackParamList } from "../types/types";
 import ProgressIndicator from "../components/common/ProgressIndicator";
 import { ScrollView } from "react-native-gesture-handler";
+import { updatePost } from "../redux/postSlice";
+import { useDispatch } from "../redux/store";
 
 interface PostEditScreenProps {
   route: RouteProp<AppRootStackParamList, "EditPost">;
@@ -31,28 +33,16 @@ const PostEditScreen: React.FC<PostEditScreenProps> = ({
     postData.description
   );
 
+  const dispatch = useDispatch();
+
   // Function to handle updating the post
   const handleUpdatePost = async () => {
-    try {
-      setLoading(true);
-      const postsCollection = collection(db, "posts");
-
-      const postRef = doc(postsCollection, postData.id);
-
-      // Define the updated post data
-      const updatedPostData = {
-        title: editedTitle,
-        description: editedDescription,
-      };
-
-      // Update the post document in Firestore
-      await updateDoc(postRef, updatedPostData);
-      navigation.goBack();
-    } catch (error) {
-      console.error("Error updating post:", error);
-    } finally {
-      setLoading(false);
-    }
+    let updatedPost = {
+      ...postData,
+      title: editedTitle,
+      description: editedDescription,
+    };
+    dispatch(updatePost(updatedPost));
   };
 
   return (

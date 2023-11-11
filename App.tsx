@@ -7,9 +7,13 @@ import React from "react";
 import { FIREBASE_AUTH } from "./firebaseConfig";
 import AuthNavigator from "./src/navigation/AuthNavigator";
 import AppNavigator from "./src/navigation/AppNavigator";
+import ProgressIndicator from "./src/components/common/ProgressIndicator";
+import { Provider } from "react-redux";
+import store from "./src/redux/store";
 
 function RootNavigation() {
   const [user, setUser] = React.useState<User>();
+  const [initializing, setInitializing] = React.useState(true);
 
   React.useEffect(() => {
     const unsubscribeFromAuthStatuChanged = onAuthStateChanged(
@@ -19,6 +23,9 @@ function RootNavigation() {
           // User is signed in, see docs for a list of available properties
           // https://firebase.google.com/docs/reference/js/firebase.User
           setUser(user);
+          if (initializing) {
+            setInitializing(false);
+          }
         } else {
           // User is signed out
           setUser(undefined);
@@ -27,16 +34,27 @@ function RootNavigation() {
     );
 
     return unsubscribeFromAuthStatuChanged;
-  }, []);
+  }, [initializing]);
+
+  if (initializing) {
+    // You can return a loading screen here
+    return (
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <ProgressIndicator />
+      </View>
+    );
+  }
 
   return user ? <AppNavigator /> : <AuthNavigator />;
 }
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <RootNavigation />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <RootNavigation />
+      </NavigationContainer>
+    </Provider>
   );
 }
 

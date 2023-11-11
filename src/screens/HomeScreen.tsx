@@ -3,10 +3,19 @@ import React, { useState, useEffect } from "react";
 import { FAB } from "@rneui/themed";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp, useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 import { db } from "../../firebaseConfig";
 import PostList from "../components/PostList";
 import { AppRootStackParamList, PostData } from "../types/types";
+import {
+  fetchPosts,
+  createPost,
+  updatePost,
+  deletePost,
+  selectAllPosts,
+} from "../redux/postSlice";
+
 import {
   DocumentData,
   QuerySnapshot,
@@ -19,7 +28,7 @@ import {
   query,
 } from "firebase/firestore";
 import ProgressIndicator from "../components/common/ProgressIndicator";
-import { getAuth } from "firebase/auth";
+import { useDispatch } from "../redux/store";
 
 interface HomeScreenProps {
   navigation: StackNavigationProp<AppRootStackParamList, "Home">;
@@ -27,10 +36,14 @@ interface HomeScreenProps {
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const [posts, setPosts] = React.useState<PostData[] | null>(null);
   const [postsWithAuthors, setPostsWithAuthors] = useState<PostData[] | null>(
     null
   );
+
+  const dispatch = useDispatch();
+  const posts = useSelector(selectAllPosts);
+
+  //   console.log(">>>", { posts });
 
   const fetchPostsWithAuthors = async () => {
     try {
@@ -62,33 +75,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   };
 
   React.useEffect(() => {
-    fetchPostsWithAuthors();
-  }, []);
-
-  React.useEffect(() => {
-    // Create a reference to the "posts" collection
-    const postsCollection = collection(db, "posts");
-
-    // Fetch all documents from the "posts" collection
-    const fetchPosts = async () => {
-      try {
-        const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(
-          postsCollection
-        );
-        const postsData: PostData[] = [];
-
-        querySnapshot.forEach((doc) => {
-          const data = doc.data() as Omit<PostData, "id">;
-          postsData.push({ id: doc.id, ...data });
-        });
-
-        setPosts(postsData);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
-
-    // fetchPosts();
+    // fetchPostsWithAuthors();
+    dispatch(fetchPosts());
   }, []);
 
   // fech post whenever a new post is created.
@@ -138,7 +126,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <PostList posts={postsWithAuthors} />
+      <PostList posts={posts} />
       <FAB
         visible={true}
         icon={{ name: "add", color: "white" }}

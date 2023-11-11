@@ -2,7 +2,10 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons"; // You may need to install this library
+import { getAuth } from "firebase/auth";
+
 import { AppRootStackParamList, PostData } from "../types/types";
+import { FIREBASE_APP, FIREBASE_AUTH } from "../../firebaseConfig";
 
 interface PostHeaderProps {
   onDeletePress: (postId: string, imgUrl: string) => Promise<void>;
@@ -12,25 +15,31 @@ interface PostHeaderProps {
 const PostHeader: React.FC<PostHeaderProps> = ({ post, onDeletePress }) => {
   const navigation = useNavigation<NavigationProp<AppRootStackParamList>>();
 
-  const { author } = post;
+  const { author, authorId } = post;
+  const user = getAuth(FIREBASE_APP).currentUser;
 
   return (
     <View style={styles.container}>
       <View style={styles.userInfoContainer}>
-        <Icon name="person" size={24} />
-
-        <Text style={styles.authorName}>By:{author?.name}</Text>
+        {author?.photoURL ? (
+          <Image source={{ uri: author.photoURL }} style={styles.image} />
+        ) : (
+          <Icon name="person" size={24} />
+        )}
+        <Text style={styles.authorName}>{author?.name}</Text>
       </View>
-      <View style={styles.iconButtonsContainer}>
-        <TouchableOpacity onPress={() => onDeletePress(post.id, post.image)}>
-          <Icon name="trash" size={24} color="red" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("EditPost", { postData: post })}
-        >
-          <Icon name="create" size={24} color="blue" />
-        </TouchableOpacity>
-      </View>
+      {authorId === user?.uid && (
+        <View style={styles.iconButtonsContainer}>
+          <TouchableOpacity onPress={() => onDeletePress(post.id, post.image)}>
+            <Icon name="trash" size={24} color="gray" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("EditPost", { postData: post })}
+          >
+            <Icon name="create" size={24} color="gray" />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -61,6 +70,12 @@ const styles = StyleSheet.create({
   iconButtonsContainer: {
     flexDirection: "row",
     gap: 20,
+  },
+  image: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 8,
   },
 });
 

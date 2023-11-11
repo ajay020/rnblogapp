@@ -17,5 +17,5 @@ export type PostData = {
   image: string;
   description: string;
   authorId: string; // The ID of the post's author
-  author?: { email: string; name: string };
+  author?: { email: string; name: string; photoURL?: string };
 };
