@@ -14,7 +14,7 @@ export type AuthRootStackParamList = {
 export type PostData = {
   id: string;
   title: string;
-  image: string;
+  image?: string;
   description: string;
   authorId: string; // The ID of the post's author
   author?: { email: string; name: string; photoURL?: string };

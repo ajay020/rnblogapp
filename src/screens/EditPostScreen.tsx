@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
-import { Input, Icon, Button } from "@rneui/themed";
+import { View, TextInput, StyleSheet } from "react-native";
+import { Input, Icon, Button, Text } from "@rneui/themed";
+import { ScrollView } from "react-native";
+import { RouteProp } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
-import { collection, doc, updateDoc } from "firebase/firestore";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-import { db } from "../../firebaseConfig";
-import { RouteProp } from "@react-navigation/native";
 import { AppRootStackParamList } from "../types/types";
 import ProgressIndicator from "../components/common/ProgressIndicator";
-import { ScrollView } from "react-native-gesture-handler";
 import { updatePost } from "../redux/postSlice";
-import { useDispatch } from "../redux/store";
+import { RootState, useDispatch } from "../redux/store";
 
 interface PostEditScreenProps {
   route: RouteProp<AppRootStackParamList, "EditPost">;
@@ -22,8 +21,6 @@ const PostEditScreen: React.FC<PostEditScreenProps> = ({
   route,
   navigation,
 }) => {
-  const [loading, setLoading] = useState(false);
-
   // Get the post data from the route params
   const { postData } = route.params;
 
@@ -34,6 +31,9 @@ const PostEditScreen: React.FC<PostEditScreenProps> = ({
   );
 
   const dispatch = useDispatch();
+  const { loadingUpdate, error } = useSelector(
+    (state: RootState) => state.posts
+  );
 
   // Function to handle updating the post
   const handleUpdatePost = async () => {
@@ -42,18 +42,24 @@ const PostEditScreen: React.FC<PostEditScreenProps> = ({
       title: editedTitle,
       description: editedDescription,
     };
-    dispatch(updatePost(updatedPost));
+    await dispatch(updatePost(updatedPost));
+    navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
-      {loading && <ProgressIndicator size="large" />}
+      {loadingUpdate && <ProgressIndicator size="large" />}
+      {error && (
+        <Text style={{ color: "red", padding: 12, marginTop: 18 }}>
+          Error: {error}
+        </Text>
+      )}
       <ScrollView style={{ backgroundColor: "white", flex: 1 }}>
         <Input
           placeholder="Title"
           value={editedTitle}
           multiline={true}
-          numberOfLines={4}
+          numberOfLines={3}
           onChangeText={setEditedTitle}
           style={styles.input}
         />

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
+import { Text } from "react-native-elements";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { collection, addDoc } from "firebase/firestore";
@@ -9,10 +10,9 @@ import CreatePost from "../components/CreatePost";
 import { AppRootStackParamList } from "../types/types";
 import { FIREBASE_APP, db } from "../../firebaseConfig";
 import ProgressIndicator from "../components/common/ProgressIndicator";
-import { uploadImage } from "../utils/firebaseUtils";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import { createPost } from "../redux/postSlice";
+import { RootState, useDispatch } from "../redux/store";
+import { useSelector } from "react-redux";
 
 type CreatePostScreenProps = {
   navigation: StackNavigationProp<AppRootStackParamList, "CreatePost">;
@@ -20,45 +20,12 @@ type CreatePostScreenProps = {
 };
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
-  const [loading, setLoading] = useState(false);
-
   const dispath = useDispatch();
+  const { loadingCreate, error } = useSelector(
+    (state: RootState) => state.posts
+  );
 
-  const handleCreatePost2 = async (post: {
-    image?: string;
-    title: string;
-    description: string;
-  }) => {
-    try {
-      let user = getAuth().currentUser;
-      if (user) {
-        setLoading(true);
-        let imageUrl: string | undefined = "";
-
-        if (post.image) {
-          imageUrl = await uploadImage(post.image);
-        }
-
-        let newPost = { ...post, authorId: user?.uid, image: imageUrl };
-
-        // Define the Firestore collection where you want to store posts
-        const postsCollection = collection(db, "posts");
-
-        // Add the new post to the collection
-        const newPostRef = await addDoc(postsCollection, newPost);
-
-        console.log("New post added with ID: ", newPostRef.id);
-
-        navigation.navigate("Home");
-      }
-    } catch (error) {
-      console.error("Error adding post: ", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreatePost = (post: {
+  const handleCreatePost = async (post: {
     image?: string;
     title: string;
     description: string;
@@ -66,13 +33,19 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
     const user = getAuth(FIREBASE_APP).currentUser;
     if (user) {
       let newPost = { ...post, authorId: user.uid };
-      dispath(createPost(newPost) as any);
+      await dispath(createPost(newPost));
+      navigation.goBack();
     }
   };
 
   return (
     <View style={styles.container}>
-      {loading && <ProgressIndicator />}
+      {loadingCreate && <ProgressIndicator />}
+      {error && (
+        <Text style={{ color: "red", padding: 12, marginTop: 18 }}>
+          Error: {error}
+        </Text>
+      )}
       <CreatePost onCreatePost={handleCreatePost} />
     </View>
   );
@@ -82,7 +55,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 14,
-    // backgroundColor: "lightblue",
+    gap: 20,
+    backgroundColor: "lightblue",
     // justifyContent: "flex-start",
   },
 });

@@ -13,12 +13,18 @@ import {
 interface PostState {
   posts: PostData[];
   status: "idle" | "loading" | "succeeded" | "failed";
+  loadingCreate: boolean;
+  loadingUpdate: boolean;
+  loadingDelete: boolean;
   error: string | null;
 }
 
 const initialState: PostState = {
   posts: [],
   status: "idle",
+  loadingCreate: false,
+  loadingUpdate: false,
+  loadingDelete: false,
   error: null,
 };
 
@@ -79,11 +85,24 @@ const postSlice = createSlice({
         state.error = action.error.message ?? "Failed to fetch posts";
       })
       // Create post
+      .addCase(createPost.pending, (state) => {
+        state.loadingCreate = true;
+      })
       .addCase(createPost.fulfilled, (state, action) => {
+        state.loadingCreate = false;
         state.posts.push(action.payload);
       })
+      .addCase(createPost.rejected, (state, action) => {
+        state.loadingCreate = false;
+        state.status = "failed";
+        state.error = action.error.message ?? "Failed to create post";
+      })
       // Update post
+      .addCase(updatePost.pending, (state) => {
+        state.loadingUpdate = true;
+      })
       .addCase(updatePost.fulfilled, (state, action) => {
+        state.loadingUpdate = false;
         const updatedPost = action.payload;
         const existingPost = state.posts.find(
           (post) => post.id === updatedPost.id
@@ -92,10 +111,24 @@ const postSlice = createSlice({
           Object.assign(existingPost, updatedPost);
         }
       })
+      .addCase(updatePost.rejected, (state, action) => {
+        state.loadingUpdate = false;
+        state.status = "failed";
+        state.error = action.error.message ?? "Failed to update post";
+      })
       // Delete post
+      .addCase(deletePost.pending, (state) => {
+        state.loadingDelete = true;
+      })
       .addCase(deletePost.fulfilled, (state, action) => {
+        state.loadingDelete = false;
         const postId = action.payload;
         state.posts = state.posts.filter((post) => post.id !== postId);
+      })
+      .addCase(deletePost.rejected, (state, action) => {
+        state.loadingDelete = false;
+        state.status = "failed";
+        state.error = action.error.message ?? "Failed to delete post";
       });
   },
 });

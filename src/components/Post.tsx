@@ -15,7 +15,6 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ post }: PostProps) => {
   const [liked, setLiked] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation<NavigationProp<AppRootStackParamList>>();
   const dispatch = useDispatch();
@@ -30,8 +29,6 @@ const Post: React.FC<PostProps> = ({ post }: PostProps) => {
 
   return (
     <View style={styles.container}>
-      {loading && <ProgressIndicator size="large" />}
-
       <PostHeader post={post} onDeletePress={handleDelete} />
 
       <Card.Divider />
