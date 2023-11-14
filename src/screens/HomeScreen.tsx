@@ -8,13 +8,7 @@ import { useSelector } from "react-redux";
 import { db } from "../../firebaseConfig";
 import PostList from "../components/PostList";
 import { AppRootStackParamList, PostData } from "../types/types";
-import {
-  fetchPosts,
-  createPost,
-  updatePost,
-  deletePost,
-  selectAllPosts,
-} from "../redux/postSlice";
+import { fetchPosts, selectAllPosts } from "../redux/postSlice";
 
 import {
   DocumentData,
@@ -28,9 +22,9 @@ import {
   query,
 } from "firebase/firestore";
 import ProgressIndicator from "../components/common/ProgressIndicator";
-import { useDispatch } from "../redux/store";
-import { fetchLikedPostsAsync } from "../redux/likedPostSlice";
-import { getAuth } from "firebase/auth";
+import { RootState, useDispatch } from "../redux/store";
+import { darkThemeColors, lightThemeColors } from "../utils/themeColors";
+import { useTheme } from "../../hooks/useTheme";
 
 interface HomeScreenProps {
   navigation: StackNavigationProp<AppRootStackParamList, "Home">;
@@ -44,6 +38,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const dispatch = useDispatch();
   const posts = useSelector(selectAllPosts);
+
+  const { themeColors } = useTheme();
 
   React.useEffect(() => {
     dispatch(fetchPosts());
@@ -95,12 +91,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: themeColors.backgroundPrimary },
+      ]}
+    >
       <PostList posts={posts} />
       <FAB
         visible={true}
-        icon={{ name: "add", color: "white" }}
-        color="green"
+        icon={{ name: "add", color: themeColors.textPrimary }}
+        color={themeColors.accentColor}
         style={styles.fab}
         onPress={() => navigation.navigate("CreatePost")}
       />

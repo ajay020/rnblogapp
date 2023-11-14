@@ -6,6 +6,7 @@ import { getAuth } from "firebase/auth";
 
 import { AppRootStackParamList, PostData } from "../types/types";
 import { FIREBASE_APP, FIREBASE_AUTH } from "../../firebaseConfig";
+import { useTheme } from "../../hooks/useTheme";
 
 interface PostHeaderProps {
   onDeletePress: (postId: string, imgUrl: string) => Promise<void>;
@@ -17,6 +18,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post, onDeletePress }) => {
 
   const { author, authorId } = post;
   const user = getAuth(FIREBASE_APP).currentUser;
+  const { themeColors } = useTheme();
 
   return (
     <View style={styles.container}>
@@ -26,17 +28,19 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post, onDeletePress }) => {
         ) : (
           <Icon name="person" size={24} />
         )}
-        <Text style={styles.authorName}>{author?.name}</Text>
+        <Text style={[styles.authorName, { color: themeColors.textSecondary }]}>
+          {author?.name}
+        </Text>
       </View>
       {authorId === user?.uid && (
         <View style={styles.iconButtonsContainer}>
           <TouchableOpacity onPress={() => onDeletePress(post.id, post.image)}>
-            <Icon name="trash" size={24} color="gray" />
+            <Icon name="trash" size={24} color={themeColors.textSecondary} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate("EditPost", { postData: post })}
           >
-            <Icon name="create" size={24} color="gray" />
+            <Icon name="create" size={24} color={themeColors.textSecondary} />
           </TouchableOpacity>
         </View>
       )}

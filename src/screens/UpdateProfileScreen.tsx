@@ -21,6 +21,7 @@ import { RootState, useDispatch } from "../redux/store";
 import { updateProfileAsync } from "../redux/userSlice";
 import { useSelector } from "react-redux";
 import { fetchPosts } from "../redux/postSlice";
+import { useTheme } from "../../hooks/useTheme";
 
 type UpdateProfileProps = {
   route: RouteProp<AppRootStackParamList, "UpdateProfile">;
@@ -34,6 +35,7 @@ const UpdateProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
   const [profilePicture, setProfilePicture] = useState(user?.photoURL || "");
 
   const dispatch = useDispatch();
+  const { themeColors } = useTheme();
   const { loadingUser, error } = useSelector((state: RootState) => state.user);
 
   const handlePickImage = async () => {
@@ -65,17 +67,26 @@ const UpdateProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Update Profile</Text>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: themeColors.backgroundSecondary },
+      ]}
+    >
+      <Text style={[styles.title, { color: themeColors.textSecondary }]}>
+        Update Profile
+      </Text>
       {loadingUser && <ProgressIndicator />}
 
-      {error && <Text style={{ color: "red" }}>Error: {error}</Text>}
+      {error && (
+        <Text style={{ color: themeColors.errorColor }}>Error: {error}</Text>
+      )}
 
       <TouchableOpacity
         style={styles.cancelIcon}
         onPress={() => navigation.goBack()}
       >
-        <Icon name="close" size={32} color="black" />
+        <Icon name="close" size={32} color={themeColors.textSecondary} />
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -89,24 +100,31 @@ const UpdateProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
           />
         ) : (
           <>
-            <Text>Select Profile Picture</Text>
+            <Text style={{ color: themeColors.textSecondary }}>
+              Select Profile Picture
+            </Text>
             <Icon name="image" size={32} color="black" />
           </>
         )}
       </TouchableOpacity>
 
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: themeColors.textSecondary }]}
         placeholder="Enter your name"
         value={name}
         onChangeText={(text) => setName(text)}
       />
 
       <TouchableOpacity
-        style={styles.updateButton}
+        style={[
+          styles.updateButton,
+          { backgroundColor: themeColors.accentColor },
+        ]}
         onPress={() => handleUpdateProfile(name, profilePicture)}
       >
-        <Text style={styles.buttonText}>Update</Text>
+        <Text style={[styles.buttonText, { color: themeColors.textPrimary }]}>
+          Update
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -150,7 +168,7 @@ const styles = StyleSheet.create({
   },
   updateButton: {
     backgroundColor: "blue",
-    padding: 12,
+    padding: 16,
     borderRadius: 5,
     alignItems: "center",
     marginBottom: 8,
@@ -164,6 +182,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "bold",
+    fontSize: 18,
   },
 });
 

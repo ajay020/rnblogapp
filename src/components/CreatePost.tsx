@@ -1,17 +1,11 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  Button,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Input } from "react-native-elements";
 
 import * as ImagePicker from "expo-image-picker";
+import { useTheme } from "../../hooks/useTheme";
+import { Button } from "@rneui/themed";
 
 interface CreatePostProps {
   onCreatePost: (newPost: {
@@ -25,6 +19,8 @@ const CreatePost = ({ onCreatePost }: CreatePostProps) => {
   const [image, setImage] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  const { themeColors } = useTheme();
 
   const handleCreatePost = () => {
     // Validate input here if needed
@@ -56,28 +52,41 @@ const CreatePost = ({ onCreatePost }: CreatePostProps) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: themeColors.backgroundSecondary },
+      ]}
+    >
       <View>
         {image && (
           <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
         )}
         <TouchableOpacity onPress={pickImage}>
-          <Text>Select Image</Text>
-          <MaterialCommunityIcons name="image-edit" size={35} />
+          <Text style={{ color: themeColors.textSecondary }}>Select Image</Text>
+          <MaterialCommunityIcons
+            name="image-edit"
+            color={themeColors.textSecondary}
+            size={35}
+          />
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.label}>Title:</Text>
+      <Text style={[styles.label, { color: themeColors.textSecondary }]}>
+        Title:
+      </Text>
       <Input
-        style={styles.input}
+        style={[styles.input, { color: themeColors.textSecondary }]}
         value={title}
         onChangeText={(text) => setTitle(text)}
         placeholder="Enter post title"
       />
 
-      <Text style={styles.label}>Description:</Text>
+      <Text style={[styles.label, { color: themeColors.textSecondary }]}>
+        Description:
+      </Text>
       <Input
-        style={styles.input}
+        style={[styles.input, { color: themeColors.textSecondary }]}
         value={description}
         onChangeText={(text) => setDescription(text)}
         placeholder="Enter post description"
@@ -85,7 +94,12 @@ const CreatePost = ({ onCreatePost }: CreatePostProps) => {
         numberOfLines={4}
       />
 
-      <Button title="Create Post" onPress={handleCreatePost} />
+      <Button
+        title="Create Post"
+        size="lg"
+        buttonStyle={{ backgroundColor: themeColors.accentColor }}
+        onPress={handleCreatePost}
+      />
     </View>
   );
 };

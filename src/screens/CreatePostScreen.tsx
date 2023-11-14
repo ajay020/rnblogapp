@@ -13,6 +13,7 @@ import ProgressIndicator from "../components/common/ProgressIndicator";
 import { createPost } from "../redux/postSlice";
 import { RootState, useDispatch } from "../redux/store";
 import { useSelector } from "react-redux";
+import { useTheme } from "../../hooks/useTheme";
 
 type CreatePostScreenProps = {
   navigation: StackNavigationProp<AppRootStackParamList, "CreatePost">;
@@ -21,6 +22,8 @@ type CreatePostScreenProps = {
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
   const dispath = useDispatch();
+  const { themeColors } = useTheme();
+
   const { loadingCreate, error } = useSelector(
     (state: RootState) => state.posts
   );
@@ -32,14 +35,19 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
   }) => {
     const user = getAuth(FIREBASE_APP).currentUser;
     if (user) {
-      let newPost = { ...post, authorId: user.uid };
+      let newPost = { ...post, authorId: user.uid, likesCount: 0 };
       await dispath(createPost(newPost));
       navigation.goBack();
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: themeColors.backgroundPrimary },
+      ]}
+    >
       {loadingCreate && <ProgressIndicator />}
       {error && (
         <Text style={{ color: "red", padding: 12, marginTop: 18 }}>

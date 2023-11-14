@@ -20,6 +20,7 @@ import {
   selectDisLikedPostIds,
   selectLikedPostIds,
 } from "../redux/likedPostSlice";
+import { useTheme } from "../../hooks/useTheme";
 
 interface PostProps {
   post: PostData;
@@ -30,6 +31,8 @@ const Post: React.FC<PostProps> = ({ post }: PostProps) => {
   const dispatch = useDispatch();
   const likedPostIds = useSelector(selectLikedPostIds);
   const dislikedPostIds = useSelector(selectDisLikedPostIds);
+
+  const { themeColors } = useTheme();
 
   const handleDelete = async (postId: string, imgUrl: string) => {
     dispatch(deletePost({ postId, imgUrl }));
@@ -61,25 +64,36 @@ const Post: React.FC<PostProps> = ({ post }: PostProps) => {
     }
   };
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: themeColors.backgroundSecondary },
+      ]}
+    >
       <PostHeader post={post} onDeletePress={handleDelete} />
 
-      <Card.Divider />
       <TouchableOpacity
         onPress={() => navigation.navigate("PostDetail", { postData: post })}
       >
-        <Text style={styles.title}>{post.title}</Text>
+        <Text style={[styles.title, { color: themeColors.textSecondary }]}>
+          {post.title}
+        </Text>
 
         {post.image && (
           <Image source={{ uri: post.image }} style={styles.image} />
         )}
-        <Text style={styles.description} numberOfLines={5}>
+        <Text
+          style={[styles.description, { color: themeColors.textSecondary }]}
+          numberOfLines={5}
+        >
           {post.description}
         </Text>
       </TouchableOpacity>
 
       <View style={styles.postFooter}>
-        <Text>{post.likesCount}</Text>
+        <Text style={[{ color: themeColors.textSecondary }]}>
+          {post.likesCount}
+        </Text>
         <TouchableOpacity onPress={handleLike}>
           <FontAwesome name="thumbs-o-up" size={24} color="gray" />
         </TouchableOpacity>
@@ -93,7 +107,7 @@ const Post: React.FC<PostProps> = ({ post }: PostProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    // backgroundColor: "white",
     padding: 16,
     marginBottom: 16,
     borderRadius: 8,
@@ -113,6 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 8,
+    paddingTop: 12,
   },
   description: {
     fontSize: 16,

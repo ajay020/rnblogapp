@@ -4,11 +4,13 @@ import { useDispatch as useReduxDispatch } from "react-redux";
 import postReducer from "./postSlice";
 import userReducer from "./userSlice";
 import likedPostsReducer from "./likedPostSlice";
+import themesReducer from "./themeSlice";
 
 const rootReducer = combineReducers({
   posts: postReducer,
   user: userReducer,
   likedPosts: likedPostsReducer,
+  themes: themesReducer,
 });
 
 const store = configureStore({
