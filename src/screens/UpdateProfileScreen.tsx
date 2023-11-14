@@ -12,15 +12,15 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import React, { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { updateProfile } from "firebase/auth";
-import { updateDoc, doc } from "firebase/firestore";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 
 import { AppRootStackParamList } from "../types/types";
 import { getAuth } from "firebase/auth";
-import { uploadImage } from "../utils/firebaseUtils";
-import { db } from "../../firebaseConfig";
 import ProgressIndicator from "../components/common/ProgressIndicator";
+import { RootState, useDispatch } from "../redux/store";
+import { updateProfileAsync } from "../redux/userSlice";
+import { useSelector } from "react-redux";
+import { fetchPosts } from "../redux/postSlice";
 
 type UpdateProfileProps = {
   route: RouteProp<AppRootStackParamList, "UpdateProfile">;
@@ -28,9 +28,13 @@ type UpdateProfileProps = {
 };
 
 const UpdateProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
-  const [name, setName] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
-  const [loading, setLoading] = useState(false);
+  const user = getAuth().currentUser;
+
+  const [name, setName] = useState(user?.displayName || "");
+  const [profilePicture, setProfilePicture] = useState(user?.photoURL || "");
+
+  const dispatch = useDispatch();
+  const { loadingUser, error } = useSelector((state: RootState) => state.user);
 
   const handlePickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -48,59 +52,24 @@ const UpdateProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
 
   const handleUpdateProfile = async (
     newName: string,
-    newProfilePicture: string | null
+    newProfilePicture: string
   ) => {
-    try {
-      const user = getAuth().currentUser;
-
-      if (user) {
-        setLoading(true);
-
-        let username = newName != "" ? newName : user.displayName;
-
-        let newProfileImageUrl: string | null = user.photoURL;
-
-        // Upload new profile picture if provided
-        if (newProfilePicture) {
-          newProfileImageUrl = await uploadImage(newProfilePicture, "users");
-        }
-
-        // Update the user's profile information
-        await updateProfile(user, {
-          displayName: username,
-          photoURL: newProfileImageUrl,
-        });
-
-        // Update the user's document in the 'users' collection in Firestore
-        const userDocRef = doc(db, "users", user.uid);
-        await updateDoc(userDocRef, {
-          name: username,
-          photoURL: newProfileImageUrl,
-        });
-
-        console.log("User profile updated successfully.", username);
-        Alert.alert("User profile updated successfully");
-
-        // Optionally, you can also update the local user object
-        const updatedUser = {
-          ...user,
-          displayName: newName,
-          photoURL: newProfileImageUrl,
-        };
-
-        // Dispatch an action or update state with the updated user information
-      }
-    } catch (error) {
-      console.error("Error updating profile: ", error);
-    } finally {
-      setLoading(false);
-    }
+    await dispatch(
+      updateProfileAsync({
+        displayName: newName,
+        photoURL: newProfilePicture,
+      })
+    );
+    dispatch(fetchPosts());
+    Alert.alert("Profile updated!");
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Update Profile</Text>
-      {loading && <ProgressIndicator />}
+      {loadingUser && <ProgressIndicator />}
+
+      {error && <Text style={{ color: "red" }}>Error: {error}</Text>}
 
       <TouchableOpacity
         style={styles.cancelIcon}
@@ -139,10 +108,6 @@ const UpdateProfileScreen: React.FC<UpdateProfileProps> = ({ navigation }) => {
       >
         <Text style={styles.buttonText}>Update</Text>
       </TouchableOpacity>
-
-      {/* <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-        <Text style={styles.buttonText}>Close</Text>
-      </TouchableOpacity> */}
     </View>
   );
 };

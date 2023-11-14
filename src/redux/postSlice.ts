@@ -6,7 +6,9 @@ import { PostData } from "../types/types";
 import {
   createPostApi,
   deletePostApi,
+  dislikePostApi,
   fetchPostsWithAuthors,
+  likePostApi,
   updatePostApi,
 } from "../posts/api";
 
@@ -63,6 +65,20 @@ export const deletePost = createAsyncThunk(
   async ({ postId, imgUrl }: { postId: string; imgUrl: string }) => {
     await deletePostApi(postId, imgUrl);
     return postId;
+  }
+);
+
+export const likePostAsync = createAsyncThunk<void, string>(
+  "posts/likePostAsync",
+  async (postId) => {
+    likePostApi(postId);
+  }
+);
+
+export const dislikePostAsync = createAsyncThunk<void, string>(
+  "posts/dislikePostAsync",
+  async (postId) => {
+    dislikePostApi(postId);
   }
 );
 
@@ -129,6 +145,20 @@ const postSlice = createSlice({
         state.loadingDelete = false;
         state.status = "failed";
         state.error = action.error.message ?? "Failed to delete post";
+      })
+      .addCase(likePostAsync.fulfilled, (state, action) => {
+        const postId = action.meta.arg;
+        const post = state.posts.find((p) => p.id === postId);
+        if (post) {
+          post.likesCount += 1;
+        }
+      })
+      .addCase(dislikePostAsync.fulfilled, (state, action) => {
+        const postId = action.meta.arg;
+        const post = state.posts.find((p) => p.id === postId);
+        if (post && post.likesCount > 0) {
+          post.likesCount -= 1;
+        }
       });
   },
 });

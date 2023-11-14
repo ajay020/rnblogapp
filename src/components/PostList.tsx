@@ -9,7 +9,6 @@ interface PostListProps {
 }
 
 const PostList: React.FC<PostListProps> = ({ posts }) => {
-  //   console.log({ posts });
   return (
     <View style={{ padding: 0 }}>
       <FlatList

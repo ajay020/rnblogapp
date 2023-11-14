@@ -7,6 +7,7 @@ import {
   query,
   doc,
   getDoc,
+  increment,
 } from "firebase/firestore";
 
 import { uploadImage } from "../utils/firebaseUtils";
@@ -91,4 +92,14 @@ export const deletePostApi = async (postId: string, imgUrl: string) => {
 
   await deleteDoc(postRef);
   console.log("Post DELETED!!");
+};
+
+export const likePostApi = async (postId: string) => {
+  const postDocRef = doc(db, "posts", postId);
+  await updateDoc(postDocRef, { likesCount: increment(1) });
+};
+
+export const dislikePostApi = async (postId: string) => {
+  const postDocRef = doc(db, "posts", postId);
+  await updateDoc(postDocRef, { likesCount: increment(-1) });
 };

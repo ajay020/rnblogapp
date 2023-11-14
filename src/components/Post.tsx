@@ -2,29 +2,38 @@ import React, { useEffect, useState } from "react";
 import { View, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { Text, Card } from "@rneui/themed";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { FontAwesome } from "@expo/vector-icons";
 
 import { AppRootStackParamList, PostData } from "../types/types";
 import PostHeader from "./PostHeader";
 import ProgressIndicator from "./common/ProgressIndicator";
 import { useDispatch } from "../redux/store";
-import { deletePost } from "../redux/postSlice";
+import {
+  deletePost,
+  dislikePostAsync,
+  likePostAsync,
+} from "../redux/postSlice";
+import { dislikePostApi } from "../posts/api";
+import { Icon } from "react-native-elements";
 
 interface PostProps {
   post: PostData;
 }
 
 const Post: React.FC<PostProps> = ({ post }: PostProps) => {
-  const [liked, setLiked] = useState(false);
-
   const navigation = useNavigation<NavigationProp<AppRootStackParamList>>();
   const dispatch = useDispatch();
 
-  const toggleLike = () => {
-    setLiked(!liked);
-  };
-
   const handleDelete = async (postId: string, imgUrl: string) => {
     dispatch(deletePost({ postId, imgUrl }));
+  };
+
+  const handleLike = () => {
+    dispatch(likePostAsync(post.id));
+  };
+
+  const handleDislike = () => {
+    dispatch(dislikePostAsync(post.id));
   };
 
   return (
@@ -45,11 +54,15 @@ const Post: React.FC<PostProps> = ({ post }: PostProps) => {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={toggleLike}>
-        <Text style={liked ? styles.likeTextActive : styles.likeText}>
-          {liked ? "Unlike" : "Like"}
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.postFooter}>
+        <Text>{post.likesCount}</Text>
+        <TouchableOpacity onPress={handleLike}>
+          <FontAwesome name="thumbs-o-up" size={24} color="gray" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleDislike}>
+          <FontAwesome name="thumbs-o-down" size={24} color="gray" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -88,6 +101,13 @@ const styles = StyleSheet.create({
   likeTextActive: {
     color: "red",
     fontSize: 16,
+  },
+  postFooter: {
+    flexDirection: "row",
+    // backgroundColor: "lightgray",
+    gap: 20,
+    paddingVertical: 10,
+    alignItems: "center",
   },
 });
 

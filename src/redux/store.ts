@@ -2,10 +2,11 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch as useReduxDispatch } from "react-redux";
 
 import postReducer from "./postSlice";
+import userSlice from "./userSlice";
 
 const rootReducer = combineReducers({
   posts: postReducer,
-  // Add other reducers as needed
+  user: userSlice,
 });
 
 const store = configureStore({

@@ -18,4 +18,10 @@ export type PostData = {
   description: string;
   authorId: string; // The ID of the post's author
   author?: { email: string; name: string; photoURL?: string };
+  likesCount: number;
 };
+
+export interface UpdateProfilePayload {
+  displayName?: string;
+  photoURL?: string;
+}
