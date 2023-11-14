@@ -29,6 +29,8 @@ import {
 } from "firebase/firestore";
 import ProgressIndicator from "../components/common/ProgressIndicator";
 import { useDispatch } from "../redux/store";
+import { fetchLikedPostsAsync } from "../redux/likedPostSlice";
+import { getAuth } from "firebase/auth";
 
 interface HomeScreenProps {
   navigation: StackNavigationProp<AppRootStackParamList, "Home">;
@@ -43,39 +45,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   const posts = useSelector(selectAllPosts);
 
-  //   console.log(">>>", { posts });
-
-  const fetchPostsWithAuthors = async () => {
-    try {
-      const postsCollection = collection(db, "posts");
-      const postsQuery = query(postsCollection);
-
-      const postsSnapshot = await getDocs(postsQuery);
-      const postsData: PostData[] = [];
-
-      for (const docRef of postsSnapshot.docs) {
-        const post = docRef.data() as Omit<PostData, "id">;
-
-        const author = await getAuthor(post.authorId);
-        if (author) {
-          post.author = author as {
-            name: string;
-            email: string;
-          };
-        }
-
-        postsData.push({ id: docRef.id, ...post });
-      }
-
-      // Now, `postsData` contains posts with their respective authors' data.
-      setPostsWithAuthors(postsData);
-    } catch (error) {
-      console.error("Error fetching posts with authors:", error);
-    }
-  };
-
   React.useEffect(() => {
-    // fetchPostsWithAuthors();
     dispatch(fetchPosts());
   }, []);
 

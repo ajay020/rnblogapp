@@ -6,15 +6,20 @@ import { FontAwesome } from "@expo/vector-icons";
 
 import { AppRootStackParamList, PostData } from "../types/types";
 import PostHeader from "./PostHeader";
-import ProgressIndicator from "./common/ProgressIndicator";
-import { useDispatch } from "../redux/store";
+import { RootState, useDispatch } from "../redux/store";
+import { useSelector } from "react-redux";
 import {
   deletePost,
   dislikePostAsync,
   likePostAsync,
 } from "../redux/postSlice";
-import { dislikePostApi } from "../posts/api";
-import { Icon } from "react-native-elements";
+import {
+  dislikePost,
+  likePost,
+  saveLikedPostsAsync,
+  selectDisLikedPostIds,
+  selectLikedPostIds,
+} from "../redux/likedPostSlice";
 
 interface PostProps {
   post: PostData;
@@ -23,19 +28,38 @@ interface PostProps {
 const Post: React.FC<PostProps> = ({ post }: PostProps) => {
   const navigation = useNavigation<NavigationProp<AppRootStackParamList>>();
   const dispatch = useDispatch();
+  const likedPostIds = useSelector(selectLikedPostIds);
+  const dislikedPostIds = useSelector(selectDisLikedPostIds);
 
   const handleDelete = async (postId: string, imgUrl: string) => {
     dispatch(deletePost({ postId, imgUrl }));
   };
 
   const handleLike = () => {
-    dispatch(likePostAsync(post.id));
+    if (!likedPostIds?.includes(post.id)) {
+      dispatch(likePost(post.id)); // Update liked posts state
+      dispatch(likePostAsync(post.id)); // Update likes count in posts
+      dispatch(
+        saveLikedPostsAsync({
+          liked: likedPostIds.concat(post.id),
+          disliked: dislikedPostIds,
+        })
+      );
+    }
   };
 
   const handleDislike = () => {
-    dispatch(dislikePostAsync(post.id));
+    if (!dislikedPostIds?.includes(post.id)) {
+      dispatch(dislikePost(post.id)); // Update disliked posts state
+      dispatch(dislikePostAsync(post.id)); // Update dislikes count in posts
+      dispatch(
+        saveLikedPostsAsync({
+          liked: likedPostIds,
+          disliked: dislikedPostIds.concat(post.id),
+        })
+      );
+    }
   };
-
   return (
     <View style={styles.container}>
       <PostHeader post={post} onDeletePress={handleDelete} />

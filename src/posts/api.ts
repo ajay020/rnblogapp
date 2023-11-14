@@ -12,7 +12,7 @@ import {
 
 import { uploadImage } from "../utils/firebaseUtils";
 import { FIREBASE_APP, db, storage } from "../../firebaseConfig";
-import { PostData } from "../types/types";
+import { PostData, LikedPostsIds } from "../types/types";
 import { deleteImage, getAuthor } from "./utils";
 
 export const fetchPostsWithAuthors = async () => {
@@ -102,4 +102,24 @@ export const likePostApi = async (postId: string) => {
 export const dislikePostApi = async (postId: string) => {
   const postDocRef = doc(db, "posts", postId);
   await updateDoc(postDocRef, { likesCount: increment(-1) });
+};
+
+export const fetchLikedPostsApi = async (
+  userUid: string
+): Promise<{ disliked: string[]; liked: string[] }> => {
+  try {
+    const likedPostsRef = doc(db, "likedPosts", userUid);
+    const likedPostsSnapshot = await getDoc(likedPostsRef);
+
+    if (likedPostsSnapshot.exists()) {
+      const likedPostsData = likedPostsSnapshot.data();
+      //   console.log(likedPostsData);
+      return likedPostsData as LikedPostsIds;
+    }
+
+    return { disliked: [], liked: [] };
+  } catch (error) {
+    console.error("Error fetching liked posts:", error);
+    throw new Error("Failed to fetch liked posts");
+  }
 };

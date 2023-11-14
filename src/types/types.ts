@@ -25,3 +25,8 @@ export interface UpdateProfilePayload {
   displayName?: string;
   photoURL?: string;
 }
+
+export type LikedPostsIds = {
+  liked: string[];
+  disliked: string[];
+};
