@@ -23,7 +23,6 @@ import {
 } from "firebase/firestore";
 import ProgressIndicator from "../components/common/ProgressIndicator";
 import { RootState, useDispatch } from "../redux/store";
-import { darkThemeColors, lightThemeColors } from "../utils/themeColors";
 import { useTheme } from "../../hooks/useTheme";
 
 interface HomeScreenProps {
@@ -52,39 +51,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const unsubscribe: Unsubscribe = onSnapshot(
       postsCollection,
       async (querySnapshot) => {
-        const postsData: PostData[] = [];
-
-        for (const docRef of querySnapshot.docs) {
-          const post = docRef.data() as Omit<PostData, "id">;
-
-          const author = await getAuthor(post.authorId);
-          if (author) {
-            post.author = author as {
-              name: string;
-              email: string;
-            };
-          }
-          postsData.push({ id: docRef.id, ...post });
-        }
-        setPostsWithAuthors(postsData);
+        dispatch(fetchPosts());
       }
     );
 
     return () => unsubscribe();
   }, []);
-
-  const getAuthor = async (authorId: string) => {
-    const usersCollection = collection(db, "users");
-    const authorDocRef = doc(usersCollection, authorId);
-    const authorDocSnapshot = await getDoc(authorDocRef);
-
-    if (authorDocSnapshot.exists()) {
-      const authorData = authorDocSnapshot.data();
-      return authorData;
-    }
-
-    return undefined;
-  };
 
   if (postsWithAuthors === null) {
     return <ProgressIndicator />;

@@ -84,7 +84,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Sign In</Text>
+      <Text style={styles.header}>Sign Up</Text>
 
       {isLoading && <ActivityIndicator color={"blue"} size={"large"} />}
       {!!value.error && (
@@ -118,7 +118,11 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
           leftIcon={<Icon name="key" size={16} />}
         />
 
-        <Button title="Sign up" buttonStyle={styles.control} onPress={signUp} />
+        <Button
+          title="Sign up"
+          buttonStyle={{ padding: 12 }}
+          onPress={signUp}
+        />
 
         <View style={styles.linkContainer}>
           <Text>Already have account? </Text>
@@ -144,6 +148,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     marginBottom: 20,
+    paddingTop: 20,
     textAlign: "center",
   },
   controls: {

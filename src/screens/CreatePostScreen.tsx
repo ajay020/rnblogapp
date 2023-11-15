@@ -10,7 +10,7 @@ import CreatePost from "../components/CreatePost";
 import { AppRootStackParamList } from "../types/types";
 import { FIREBASE_APP, db } from "../../firebaseConfig";
 import ProgressIndicator from "../components/common/ProgressIndicator";
-import { createPost } from "../redux/postSlice";
+import { createPost, fetchPosts } from "../redux/postSlice";
 import { RootState, useDispatch } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useTheme } from "../../hooks/useTheme";
@@ -21,7 +21,7 @@ type CreatePostScreenProps = {
 };
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
   const { themeColors } = useTheme();
 
   const { loadingCreate, error } = useSelector(
@@ -36,7 +36,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
     const user = getAuth(FIREBASE_APP).currentUser;
     if (user) {
       let newPost = { ...post, authorId: user.uid, likesCount: 0 };
-      await dispath(createPost(newPost));
+      await dispatch(createPost(newPost));
       navigation.goBack();
     }
   };

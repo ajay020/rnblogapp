@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Input } from "react-native-elements";
 
@@ -26,9 +33,9 @@ const CreatePost = ({ onCreatePost }: CreatePostProps) => {
     // Validate input here if needed
     if (title && description) {
       onCreatePost({ image, title, description });
-      setImage("");
-      setTitle("");
-      setDescription("");
+      //   setImage("");
+      //   setTitle("");
+      //   setDescription("");
     } else {
       // Handle validation error
       console.error("Please fill in all fields.");
@@ -52,55 +59,62 @@ const CreatePost = ({ onCreatePost }: CreatePostProps) => {
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: themeColors.backgroundSecondary },
-      ]}
-    >
-      <View>
-        {image && (
-          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-        )}
-        <TouchableOpacity onPress={pickImage}>
-          <Text style={{ color: themeColors.textSecondary }}>Select Image</Text>
-          <MaterialCommunityIcons
-            name="image-edit"
-            color={themeColors.textSecondary}
-            size={35}
-          />
-        </TouchableOpacity>
+    <ScrollView style={{ flex: 1 }}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: themeColors.backgroundSecondary },
+        ]}
+      >
+        <View>
+          {image && (
+            <Image
+              source={{ uri: image }}
+              style={{ width: 200, height: 200 }}
+            />
+          )}
+          <TouchableOpacity onPress={pickImage}>
+            <Text style={{ color: themeColors.textSecondary }}>
+              Select Image
+            </Text>
+            <MaterialCommunityIcons
+              name="image-edit"
+              color={themeColors.textSecondary}
+              size={35}
+            />
+          </TouchableOpacity>
+        </View>
+
+        <Text style={[styles.label, { color: themeColors.textSecondary }]}>
+          Title:
+        </Text>
+        <Input
+          style={[styles.input, { color: themeColors.textSecondary }]}
+          value={title}
+          onChangeText={(text) => setTitle(text)}
+          placeholder="Enter post title"
+        />
+
+        <Text style={[styles.label, { color: themeColors.textSecondary }]}>
+          Description:
+        </Text>
+        <Input
+          style={[styles.input, { color: themeColors.textSecondary }]}
+          value={description}
+          onChangeText={(text) => setDescription(text)}
+          placeholder="Enter post description"
+          multiline
+          numberOfLines={4}
+        />
+
+        <Button
+          title="Create Post"
+          size="lg"
+          buttonStyle={{ backgroundColor: themeColors.accentColor }}
+          onPress={handleCreatePost}
+        />
       </View>
-
-      <Text style={[styles.label, { color: themeColors.textSecondary }]}>
-        Title:
-      </Text>
-      <Input
-        style={[styles.input, { color: themeColors.textSecondary }]}
-        value={title}
-        onChangeText={(text) => setTitle(text)}
-        placeholder="Enter post title"
-      />
-
-      <Text style={[styles.label, { color: themeColors.textSecondary }]}>
-        Description:
-      </Text>
-      <Input
-        style={[styles.input, { color: themeColors.textSecondary }]}
-        value={description}
-        onChangeText={(text) => setDescription(text)}
-        placeholder="Enter post description"
-        multiline
-        numberOfLines={4}
-      />
-
-      <Button
-        title="Create Post"
-        size="lg"
-        buttonStyle={{ backgroundColor: themeColors.accentColor }}
-        onPress={handleCreatePost}
-      />
-    </View>
+    </ScrollView>
   );
 };
 

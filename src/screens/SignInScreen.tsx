@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
-    backgroundColor: "#ccc",
+    backgroundColor: "white",
     // alignItems: "center",
     justifyContent: "center",
   },
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     marginBottom: 20,
+    paddingTop: 20,
     textAlign: "center",
   },
   control: {

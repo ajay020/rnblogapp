@@ -19,6 +19,7 @@ function RootNavigation() {
     const unsubscribeFromAuthStatuChanged = onAuthStateChanged(
       FIREBASE_AUTH,
       (user) => {
+        console.log({ user });
         if (user) {
           setUser(user);
           if (initializing) {
@@ -34,14 +35,14 @@ function RootNavigation() {
     return unsubscribeFromAuthStatuChanged;
   }, [initializing]);
 
-  if (initializing) {
-    // You can return a loading screen here
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <ProgressIndicator />
-      </View>
-    );
-  }
+  //   if (initializing) {
+  //     // You can return a loading screen here
+  //     return (
+  //       <View style={{ flex: 1, justifyContent: "center" }}>
+  //         <ProgressIndicator />
+  //       </View>
+  //     );
+  //   }
 
   return user ? <AppNavigator /> : <AuthNavigator />;
 }
