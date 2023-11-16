@@ -31,7 +31,10 @@ export default () => {
       <Stack.Screen
         name="PostDetail"
         component={PostDetailScreen}
-        options={{ headerTintColor: themeColors.textSecondary }}
+        options={{
+          headerShown: false,
+          headerTintColor: themeColors.textSecondary,
+        }}
       />
       <Stack.Screen
         name="UpdateProfile"

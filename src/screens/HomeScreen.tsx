@@ -58,7 +58,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     return () => unsubscribe();
   }, []);
 
-  if (postsWithAuthors === null) {
+  if (posts === null) {
     return <ProgressIndicator />;
   }
 

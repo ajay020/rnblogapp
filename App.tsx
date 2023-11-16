@@ -19,7 +19,6 @@ function RootNavigation() {
     const unsubscribeFromAuthStatuChanged = onAuthStateChanged(
       FIREBASE_AUTH,
       (user) => {
-        console.log({ user });
         if (user) {
           setUser(user);
           if (initializing) {
