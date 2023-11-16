@@ -9,7 +9,7 @@ import { FIREBASE_APP, FIREBASE_AUTH } from "../../firebaseConfig";
 import { useTheme } from "../../hooks/useTheme";
 
 interface PostHeaderProps {
-  onDeletePress: (postId: string, imgUrl: string) => Promise<void>;
+  onDeletePress: (postId: string, imgUrl: string | undefined) => Promise<void>;
   post: PostData;
 }
 

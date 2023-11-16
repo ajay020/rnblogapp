@@ -8,11 +8,10 @@ import {
   ScrollView,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Input } from "react-native-elements";
+import { Input, Button } from "react-native-elements";
 
 import * as ImagePicker from "expo-image-picker";
 import { useTheme } from "../../hooks/useTheme";
-import { Button } from "@rneui/themed";
 
 interface CreatePostProps {
   onCreatePost: (newPost: {
@@ -109,7 +108,6 @@ const CreatePost = ({ onCreatePost }: CreatePostProps) => {
 
         <Button
           title="Create Post"
-          size="lg"
           buttonStyle={{ backgroundColor: themeColors.accentColor }}
           onPress={handleCreatePost}
         />

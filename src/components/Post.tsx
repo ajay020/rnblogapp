@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { Text, Card } from "@rneui/themed";
+import { Text, Card } from "react-native-elements";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -34,7 +34,7 @@ const Post: React.FC<PostProps> = ({ post }: PostProps) => {
 
   const { themeColors } = useTheme();
 
-  const handleDelete = async (postId: string, imgUrl: string) => {
+  const handleDelete = async (postId: string, imgUrl: string | undefined) => {
     dispatch(deletePost({ postId, imgUrl }));
   };
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, TextInput, StyleSheet, ScrollView } from "react-native";
-import { Input, Icon, Text, Button } from "@rneui/themed";
+import { Input, Text, Button } from "react-native-elements";
 import { RouteProp } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
@@ -82,10 +82,8 @@ const PostEditScreen: React.FC<PostEditScreenProps> = ({
       </ScrollView>
       <Button
         title="Save"
-        size="lg"
         onPress={handleUpdatePost}
-        buttonStyle={{ backgroundColor: themeColors.accentColor }}
-        style={[styles.button]}
+        buttonStyle={{ backgroundColor: themeColors.accentColor, padding: 16 }}
       />
     </View>
   );
@@ -97,7 +95,7 @@ const styles = StyleSheet.create({
   button: {
     // position: "absolute",
     // bottom: 10,
-    padding: 18,
+    // padding: 18,
   },
   container: {
     padding: 12,

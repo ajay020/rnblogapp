@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "blogApp",
-    "slug": "blogApp",
+    "slug": "blogapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.ajay020.blogApp"
@@ -28,8 +30,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "291f70e4-b4bf-4eb4-9f0c-44ffb5bc6ccf"
+        "projectId": "5bb63eda-290e-4a56-8e5a-33e7e808cca8"
       }
-    }
+    },
+    "owner": "ajay020"
   }
 }

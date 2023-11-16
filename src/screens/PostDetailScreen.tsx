@@ -1,8 +1,15 @@
 import { RouteProp } from "@react-navigation/native";
 import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { AppRootStackParamList } from "../types/types";
-import { ScrollView } from "react-native-gesture-handler";
+
 import { useTheme } from "../../hooks/useTheme";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
@@ -27,13 +34,13 @@ const PostDetailScreen: React.FC<PostDetailScreenProps> = ({
         style={styles.cancelIcon}
         onPress={() => navigation.goBack()}
       >
-        <Icon name="close" size={44} color={themeColors.textSecondary} />
+        <Icon name="close" size={50} color={themeColors.accentColor} />
       </TouchableOpacity>
       <ScrollView
         style={[
           { backgroundColor: themeColors.backgroundSecondary },
           {
-            padding: 8,
+            padding: 12,
             paddingTop: 18,
             // backgroundColor: "green",
           },
@@ -61,7 +68,7 @@ const styles = StyleSheet.create({
   container: {
     // flex: 1,
     // gap: 20,
-    padding: 18,
+    // padding: 18,
     paddingTop: 28,
     justifyContent: "space-between",
     // backgroundColor: "red",
@@ -75,6 +82,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginTop: 16,
+    textAlign: "center",
   },
   description: {
     fontSize: 16,
@@ -83,7 +91,7 @@ const styles = StyleSheet.create({
   cancelIcon: {
     position: "absolute",
     top: 28,
-    left: 20,
+    left: 14,
     zIndex: 100,
   },
 });

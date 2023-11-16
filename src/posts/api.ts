@@ -81,7 +81,7 @@ export const updatePostApi = async (post: PostData) => {
   //   navigation.goBack();
 };
 
-export const deletePostApi = async (postId: string, imgUrl: string) => {
+export const deletePostApi = async (postId: string, imgUrl: string | undefined) => {
   // Delete image associated with the post
   if (imgUrl) {
     await deleteImage(imgUrl);

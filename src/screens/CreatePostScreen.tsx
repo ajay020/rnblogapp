@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Text } from "react-native-elements";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
-import { collection, addDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 import CreatePost from "../components/CreatePost";

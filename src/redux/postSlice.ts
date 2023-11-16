@@ -62,7 +62,13 @@ export const updatePost = createAsyncThunk(
 // Create an async thunk for deleting a post
 export const deletePost = createAsyncThunk(
   "posts/deletePost",
-  async ({ postId, imgUrl }: { postId: string; imgUrl: string }) => {
+  async ({
+    postId,
+    imgUrl,
+  }: {
+    postId: string;
+    imgUrl: string | undefined;
+  }) => {
     await deletePostApi(postId, imgUrl);
     return postId;
   }

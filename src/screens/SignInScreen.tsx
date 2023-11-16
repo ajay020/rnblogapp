@@ -6,11 +6,10 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
-import { Input } from "react-native-elements";
+import { Input, Button } from "react-native-elements";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Button } from "@rneui/themed";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 
 import { FIREBASE_AUTH } from "../../firebaseConfig";
@@ -89,13 +88,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({ navigation }) => {
           leftIcon={<Icon name="key" size={16} />}
         />
 
-        <Button
-          radius={"sm"}
-          size="lg"
-          title="Sign in"
-          buttonStyle={styles.control}
-          onPress={signIn}
-        />
+        <Button title="Sign in" buttonStyle={styles.control} onPress={signIn} />
         <View style={styles.linkContainer}>
           <Text>Don't have account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Register")}>
